@@ -6,10 +6,11 @@ myPath = r'C:\Users\David\Documents\GitHub\Allo-to-Telegram-tool\alloCSV';
 
 fileList = [f for f in listdir(myPath) if isfile(join(myPath, f))]
 
-for names in fileList:
-    print (names)
+for name in fileList:
+    print (name)
     
-    file currentBackup = open(names, r, -1)
+    currentBackup = open(name, "r")
+    file_processing(name)
 
 def file_processing:
     print ("processing conversation ")
