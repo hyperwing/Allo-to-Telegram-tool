@@ -14,8 +14,20 @@ APItoken = '758991141:AAHmbVvfq3zFB-QWwIDhqn9FTEQ45xF1WR8'
 bot = telebot.TeleBot(APItoken)
 print ('starting tool')
 
+class Message:
+    ts = ""
+    name = ""
+    id = 0
+    sender = ""
+    message_type = ""
+    message_content =""
+
+def make_message(ts, name, id, sender, message_type, message_content):
+    message = Message(ts, name, id, sender, message_type, message_content)
+    return message
+
 #directory path
-myPath = r"D:\Users\futbo\Documents\GitHub\Allo-to-Telegram-tool\alloCSV"
+myPath = r"C:\Users\David\Documents\GitHub\Allo-to-Telegram-tool\alloCSV"
 
 fileList = [f for f in listdir(myPath) if isfile(join(myPath, f))]
 
@@ -33,16 +45,17 @@ def file_processing(alloFile):
 
         columns = row.split(',')
         # print(columns[convo_id])
+        currentMessage = make_message(columns[0],columns[1], columns[2], columns[3], columns[4], columns[5])
 
-        if(columns[convo_id] in conversationData):
-            #list of messages in conversation
-            current_convo = conversationData[columns[convo_id]]
-            current_convo.append(columns[message_content])
-            conversationData.update({columns[convo_id]: current_convo})
+
+        if(currentMessage.id in conversationData):
+            current_convo_list = conversationData[currentMessage.id]
+            current_convo_list.append(currentMessage)
+            conversationData.update({columns[convo_id]: current_convo_list})
         else:
             #new conversations
-            tempList = [columns[message_content]]
-            conversationData.update({columns[convo_id]: tempList})
+            tempList = [currentMessage]
+            conversationData.update({currentMessage.id: tempList})
 
     print(conversationData)
 
