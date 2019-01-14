@@ -3,6 +3,8 @@ from os.path import isfile, join
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 import urllib2
+
+
 #indices for the csv
 date = 0,
 convo_name = 1
@@ -11,10 +13,13 @@ sender = 3
 message_type = 4
 message_content = 5
 
+
+target_allo_chat = 0
+
 telegram_user_id = 0
 bot_chat_id=0
 chat_to_send = 0
-
+selectedConversation = 0
 
 APItoken = '758991141:AAHmbVvfq3zFB-QWwIDhqn9FTEQ45xF1WR8'
 bot = telebot.TeleBot(APItoken)
@@ -68,6 +73,13 @@ def file_processing(alloFile):
     # print(conversationData.get("7y0SfeN7lCuq0GFF5UsMYZofIjJ7LrvPvsePVWSv450=")[0].message_type)
 
 
+#Sends messages to the chat
+def send_to_chat():
+    print("sending to "+conversationNames[convo_name])
+    for convo_list in conversationData[selectedConversation]:
+        for mess in convo_list:
+            print(mess.name+":"+mess.message_content)
+
 #starts bot
 @bot.message_handler(commands=['start', 'help'])
 def handle_start_help(message):
@@ -79,6 +91,11 @@ def handle_start_help(message):
 
     bot.send_message(bot_chat_id, "Send me an Allo .csv")
     pass
+
+@bot.message_handler(commands=['transfer'])
+def handle_start_transfer(message):
+    bot.send_message(bot_chat_id, "beginning transfer")
+    send_to_chat()
 
 @bot.message_handler(content_types=['document', 'audio'])
 def handle_docs_audio(message):
@@ -103,23 +120,28 @@ def handle_docs_audio(message):
 @bot.message_handler(content_types=['contact'])
 def handle_contacts(message):
     global chat_to_send
-
+    
     bot.send_message(bot_chat_id, "contact received.")
     
     try:
         chat_to_send = message.contact.user_id
         print("user_id:" +str(chat_to_send))
-        bot.send_message(bot_chat_id, "user id:" +str(chat_to_send))
+        if(chat_to_send == None):
+            raise ValueError('Contact is empty')
+        # bot.send_message(bot_chat_id, "user id:" +str(chat_to_send))
+        
+        bot.send_message(bot_chat_id, "Allo chat :"+conversationNames[selectedConversation])
+        bot.send_message(bot_chat_id, "Telegram User ID: "+ str(chat_to_send ))
+        bot.send_message(bot_chat_id, "/transfer to begin messages" )
         pass
+    except ValueError as err:
+        print(err)
+        bot.send_message(bot_chat_id, "Contact does not have a telegram id, click on the contact in Telegram and share to this chat")
     except:
         print("invalid contact")
         bot.send_message(bot_chat_id, "Contact does not have a telegram id, try another")
         pass
 
-    
-
-    #TODO display chats to import
-    
 
 def verify_csv(documentToCheck):
     mimeType = documentToCheck.mime_type
@@ -131,22 +153,32 @@ def verify_csv(documentToCheck):
 
 def gen_markup():
     markup = InlineKeyboardMarkup()
-    print("convo length: "+str(conversationNames.count))
-    markup.row_width = conversationNames.count
+    print("number of convos: "+str(len(conversationNames)))
+
+    markup.row_width = len(conversationNames)
+    
+    allo_index =0
     for name in conversationNames:
-        markup.add(InlineKeyboardButton("Send contact", callback_data= name))
+        print("name: "+name)
+        markup.add(InlineKeyboardButton(name, callback_data= str(allo_index)))
+        allo_index +=1
     return markup
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
+    global selectedConversation
+
+    print("callback handler :"+call.data)
+    index = int(call.data)
 
     for conversation in conversationNames:
-        if call.data == conversation:
-            bot.answer_callback_query(call.id, conversation+"chosen")
-            print("choice: "+conversation)
+        if conversationNames[index] == conversation:
+            bot.answer_callback_query(call.id, conversation+" chosen")
+            selectedConversation = index
+            print("choice: "+conversationNames[index])
 
+    bot.send_message(bot_chat_id, "send a telegram contact")
 
-    
     # if call.data == "cb_contact":
     #     bot.answer_callback_query(call.id, "send me the contact to add the conversation to")
     #     print("choice:contact")
