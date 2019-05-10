@@ -94,13 +94,21 @@ def handle_start_help(message):
 
     print("chat_id: "+ str(bot_chat_id))
 
-    bot.send_message(bot_chat_id, "Send me an Allo .csv")
+    bot.send_message(bot_chat_id, "PM me an Allo .csv")
     pass
 
 @bot.message_handler(commands=['transfer'])
 def handle_start_transfer(message):
     bot.send_message(bot_chat_id, "beginning transfer")
     send_to_chat()
+
+@bot.message_handler(commands=['getGroupID'])
+def handle_get_group_id(message):
+    chat_to_send = message.chat.id
+    print("chat to send: "+str(chat_to_send))
+    idStr = "ID is "+str(chat_to_send)
+    bot.send_message(chat_to_send, idStr)
+    
 
 @bot.message_handler(content_types=['document', 'audio'])
 def handle_docs_audio(message):
@@ -122,6 +130,9 @@ def handle_docs_audio(message):
     else:
         bot.send_message(bot_chat_id, "invalid file, send another")
 
+
+
+# THIS IS USEFUL FOR SOME FUTURE SHIT
 @bot.message_handler(content_types=['contact'])
 def handle_contacts(message):
     global chat_to_send
@@ -186,7 +197,7 @@ def callback_query(call):
             print("alloID: "+str(selectedConversation))
             print("choice: "+conversationNames[index])
 
-    bot.send_message(bot_chat_id, "send a telegram contact")
+    bot.send_message(bot_chat_id, "/transfer to start")
 
     # if call.data == "cb_contact":
     #     bot.answer_callback_query(call.id, "send me the contact to add the conversation to")
@@ -199,7 +210,7 @@ def callback_query(call):
 
 @bot.message_handler(func=lambda message: True)
 def handle_convo(message):
-    bot.send_message(bot_chat_id, "choose a chat method", reply_markup=gen_markup())
+    bot.send_message(bot_chat_id, "choose a chat", reply_markup=gen_markup())
 
 
 
