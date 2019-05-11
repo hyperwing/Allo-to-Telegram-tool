@@ -72,18 +72,22 @@ def file_processing(alloFile):
             conversationData.update({currentMessage.id: tempList})
 
     print(conversationNames)
+    print(conversationData)
     # print(conversationData.get("7y0SfeN7lCuq0GFF5UsMYZofIjJ7LrvPvsePVWSv450=")[0].message_type)
 
 
 #Sends messages to the chat
 def send_to_chat():
+    global selectedConversation
     print("sending to "+conversationNames[convo_name])
-
+    print (selectedConversation)
     print(conversationData.get(selectedConversation))
 
     for convo_list in conversationData.get(selectedConversation):
-        for message in convo_list:
-            print(message.name+":"+message.message_content)
+        #for message in convo_list:
+        print(convo_list.ts+"\n"+convo_list.sender+":\n"+convo_list.message_content)
+        bot.send_message(bot_chat_id, convo_list.ts+"\n"+convo_list.sender+":\n"+convo_list.message_content)
+
 
 #starts bot
 @bot.message_handler(commands=['start', 'help'])
@@ -118,6 +122,7 @@ def handle_docs_audio(message):
     bot.reply_to(message, "document received, verifying validity...")
     if(verify_csv(message.document)):
         bot.send_message(bot_chat_id, "verified")
+        bot.send_message(bot_chat_id, "processing file")
 
         target_url = "https://api.telegram.org/file/bot"+ str(APItoken)+"/"+bot.get_file(message.document.file_id).file_path
 
@@ -175,6 +180,7 @@ def gen_markup():
     #puts the allo ids into a global variable
     allo_ids = [len(conversationNames)]
     allo_ids.append(conversationData.keys())
+    #allo_ids[1].reverse()
     
     allo_index =0
     for name in conversationNames:
@@ -189,11 +195,11 @@ def callback_query(call):
 
     print("callback handler :"+call.data)
     index = int(call.data)
-
     for conversation in conversationNames:
         if conversationNames[index] == conversation:
             bot.answer_callback_query(call.id, conversation+" chosen")
-            selectedConversation = str(allo_ids[index])
+            #first element is size
+            selectedConversation = str(allo_ids[1][index])
             print("alloID: "+str(selectedConversation))
             print("choice: "+conversationNames[index])
 
