@@ -61,6 +61,9 @@ def file_processing(alloFile):
 
 
         if(currentMessage.id in conversationData):
+            #print("Adding "+currentMessage.name)
+            #print("ID: "+ currentMessage.id)
+            #print("ID: "+ currentMessage.message_content)
             current_convo_list = conversationData[currentMessage.id]
             current_convo_list.append(currentMessage)
             conversationData.update({columns[convo_id]: current_convo_list})
@@ -81,12 +84,14 @@ def send_to_chat():
     global selectedConversation
     print("sending to "+conversationNames[convo_name])
     print (selectedConversation)
-    print(conversationData.get(selectedConversation))
+    print(conversationData[selectedConversation][0].name)
 
-    for convo_list in conversationData.get(selectedConversation):
+
+
+    for convo in conversationData[selectedConversation]:
         #for message in convo_list:
-        print(convo_list.ts+"\n"+convo_list.sender+":\n"+convo_list.message_content)
-        bot.send_message(bot_chat_id, convo_list.ts+"\n"+convo_list.sender+":\n"+convo_list.message_content)
+        print(convo.ts+"\n"+convo.sender+":\n"+convo.message_content)
+        bot.send_message(bot_chat_id, convo.ts+"\n"+convo.sender+":\n"+convo.message_content)
 
 
 #starts bot
@@ -180,12 +185,21 @@ def gen_markup():
     #puts the allo ids into a global variable
     allo_ids = [len(conversationNames)]
     allo_ids.append(conversationData.keys())
+    print(allo_ids)
     #allo_ids[1].reverse()
     
-    allo_index =0
-    for name in conversationNames:
-        print("name: "+name)
-        markup.add(InlineKeyboardButton(name, callback_data= str(allo_index)))
+    # allo_index =0
+    # for name in conversationNames:
+    #     print("name: "+name)
+    #     markup.add(InlineKeyboardButton(name, callback_data= str(allo_index)))
+    #     allo_index +=1
+    # return markup
+
+    allo_index = 0
+    for conversation in conversationData:
+        print("name:"+ conversation)
+        print(conversationData[conversation][0].name)
+        markup.add(InlineKeyboardButton(conversationData[conversation][0].name, callback_data= str(allo_index)))
         allo_index +=1
     return markup
 
@@ -199,7 +213,7 @@ def callback_query(call):
         if conversationNames[index] == conversation:
             bot.answer_callback_query(call.id, conversation+" chosen")
             #first element is size
-            selectedConversation = str(allo_ids[1][index])
+            selectedConversation = str(allo_ids[1] [index] ) 
             print("alloID: "+str(selectedConversation))
             print("choice: "+conversationNames[index])
 
