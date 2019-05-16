@@ -74,8 +74,8 @@ def file_processing(alloFile):
             tempList = [currentMessage]
             conversationData.update({currentMessage.id: tempList})
 
-    print(conversationNames)
-    print(conversationData)
+    #print(conversationNames)
+    #print(conversationData)
     # print(conversationData.get("7y0SfeN7lCuq0GFF5UsMYZofIjJ7LrvPvsePVWSv450=")[0].message_type)
 
 
@@ -90,9 +90,12 @@ def send_to_chat():
 
     for convo in conversationData[selectedConversation]:
         #for message in convo_list:
-        print(convo.ts+"\n"+convo.sender+":\n"+convo.message_content)
-        bot.send_message(bot_chat_id, convo.ts+"\n"+convo.sender+":\n"+convo.message_content)
+        senderTxt = convo.sender[13:]
 
+        print(convo.ts+"\n"+senderTxt+":\n"+convo.message_content)
+        bot.send_message(bot_chat_id, convo.ts+"\n"+senderTxt+":\n"+convo.message_content)
+    print("convo imported")
+    bot.send_message(bot_chat_id, "finished importing")
 
 #starts bot
 @bot.message_handler(commands=['start', 'help'])
