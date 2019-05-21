@@ -23,7 +23,12 @@ selectedConversation = ""
 #all allo ids in csv
 allo_ids =[]
 
-APItoken = '758991141:AAHmbVvfq3zFB-QWwIDhqn9FTEQ45xF1WR8'
+
+#######################################
+# ENTER YOUR API TOKEN HERE#  EG: 758991141:AAHmbVvfq3zFB-QWwIDhqn9FTEQ45xF1WR8
+APItoken = ''
+#######################################
+
 bot = telebot.TeleBot(APItoken)
 print ('starting tool')
 
@@ -76,7 +81,6 @@ def file_processing(alloFile):
 
     #print(conversationNames)
     #print(conversationData)
-    # print(conversationData.get("7y0SfeN7lCuq0GFF5UsMYZofIjJ7LrvPvsePVWSv450=")[0].message_type)
 
 
 #Sends messages to the chat
@@ -96,6 +100,19 @@ def send_to_chat():
         bot.send_message(bot_chat_id, convo.ts+"\n"+senderTxt+":\n"+convo.message_content)
     print("convo imported")
     bot.send_message(bot_chat_id, "finished importing")
+    
+    # Process ended reset variables
+    conversationNames = []
+    conversationData ={}
+    telegram_user_id = 0
+    bot_chat_id=0
+    chat_to_send = 0
+
+#allo id number
+selectedConversation = ""
+#all allo ids in csv
+allo_ids =[]
+
 
 #starts bot
 @bot.message_handler(commands=['start', 'help'])

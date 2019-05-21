@@ -5,6 +5,7 @@ using this intuitive app, you can switch easily to Telegram without losing your 
 
 Dependencies:
 - pip Telebot
+- python 2.7
 
 Running the Bot:
 1. Follow the instructions with the Bot Father to get an API token
