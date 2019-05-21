@@ -3,6 +3,15 @@ Time to switch away from Allo into Telegram!
 
 using this intuitive app, you can switch easily to Telegram without losing your data.
 
+Dependencies:
+- pip Telebot
+
+Running the Bot:
+1. Follow the instructions with the Bot Father to get an API token
+2. Add the token to APItoken variable
+3. Run the python file
+
+Using the Bot
 1. get the .csv file from Allo using their instructions https://support.google.com/allo/answer/7365005?co=GENIE.Platform%3DAndroid&hl=en 
 2. Create a group that you wish to import into Telegram, and add the bot AlloToTelegramBot to the chat as well as anyone who was in the group you wish to be recovered
 3. post "/start" in the group
@@ -11,5 +20,3 @@ using this intuitive app, you can switch easily to Telegram without losing your 
 6. post "/transfer" in the group to begin
 
 Enjoy!
-
-Note: some of the callback toasts may have bugs, but the correct chat should be imported

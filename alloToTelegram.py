@@ -214,7 +214,7 @@ def callback_query(call):
     index = int(call.data)
     for conversation in conversationNames:
         if conversationNames[index] == conversation:
-            bot.answer_callback_query(call.id, conversation+" chosen")
+            bot.answer_callback_query(call.id, "conversation set")
             #first element is size
             selectedConversation = str(allo_ids[1] [index] ) 
             print("alloID: "+str(selectedConversation))
